@@ -27,6 +27,7 @@
     "sass": "^1.49.0"
   },
   "dependencies": {
+    "gulp-imagemin": "^8.0.0",
     "gulp-notify": "^4.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-svg-sprite": "^1.5.0",

@@ -23,39 +23,82 @@ const ftp = require('vinyl-ftp');
 
 
 function fonts () {
-	src('src/fonts/**.ttf')
-		.pipe(ttf2woff())
-		.pipe(dest('app/fonts/'))
 	return src('src/fonts/**.ttf')
 		.pipe(ttf2woff2())
 		.pipe(dest('app/fonts/'))
 }
 
+const checkWeight = (fontname) => {
+  let weight = 400;
+  switch (true) {
+    case /Thin/.test(fontname):
+      weight = 100;
+      break;
+    case /ExtraLight/.test(fontname):
+      weight = 200;
+      break;
+    case /Light/.test(fontname):
+      weight = 300;
+      break;
+    case /Regular/.test(fontname):
+      weight = 400;
+      break;
+    case /Medium/.test(fontname):
+      weight = 500;
+      break;
+    case /SemiBold/.test(fontname):
+      weight = 600;
+      break;
+    case /Semi/.test(fontname):
+      weight = 600;
+      break;
+    case /Bold/.test(fontname):
+      weight = 700;
+      break;
+    case /ExtraBold/.test(fontname):
+      weight = 800;
+      break;
+    case /Heavy/.test(fontname):
+      weight = 700;
+      break;
+    case /Black/.test(fontname):
+      weight = 900;
+      break;
+    default:
+      weight = 400;
+  }
+  return weight;
+}
+
 const cb = () => {}
 
-let srcFonts = 'src/sass/_fonts.sass';
-let appFonts = 'app/fonts/';
+let srcFonts = './src/sass/_fonts.sass';
+let appFonts = './app/fonts/';
 
 const fontsStyle = (done) => {
-	let file_content = fs.readFileSync(srcFonts);
+  let file_content = fs.readFileSync(srcFonts);
 
-	fs.writeFile(srcFonts, '', cb);
-	fs.readdir(appFonts, function (err, items) {
-		if (items) {
-			let c_fontname;
-			for (var i = 0; i < items.length; i++) {
+  fs.writeFile(srcFonts, '', cb);
+  fs.readdir(appFonts, function (err, items) {
+    if (items) {
+      let c_fontname;
+      for (var i = 0; i < items.length; i++) {
 				let fontname = items[i].split('.');
 				fontname = fontname[0];
-				if (c_fontname != fontname) {
-					fs.appendFile(srcFonts, '@include font-face("' + fontname + '", "' + fontname + '", 400)\r\n', cb);
-				}
-				c_fontname = fontname;
-			}
-		}
-	})
+        let font = fontname.split('-')[0];
+        let weight = checkWeight(fontname);
 
-	done();
+        if (c_fontname != fontname) {
+          fs.appendFile(srcFonts, '@include font-face("' + font + '", "' + fontname + '", ' + weight +')\r\n', cb);
+        }
+        c_fontname = fontname;
+      }
+    }
+  })
+
+  done();
 }
+
 
 function pug() {
     return src('src/index.pug')
@@ -98,7 +141,7 @@ function imgToApp() {
 }
 
 function svgSprites() {
-  return src(['src/img/**.svg'])
+  return src(['src/img/svg/**.svg'])
   .pipe(svgSprite({
     mode: {
       stack: {
@@ -221,7 +264,9 @@ function scriptsBuild () {
 
 }
 
-exports.build = series(clear, parallel(pug, scriptsBuild, fonts, resources, imgToApp, svgSprites), fontsStyle, sassBuild);
+
+
+exports.build = series(clear, parallel(pug, scriptsBuild, fonts, resources, imgToApp, svgSpritesg), fontsStyle, sassBuild);
 
 
 

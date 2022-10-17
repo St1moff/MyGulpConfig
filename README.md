@@ -1,4 +1,4 @@
-# Gulp - сборка MaxGraph
+# Gulp - сборка MaxGraph widh St1moff additions
 
 > Используется Gulp 4
 

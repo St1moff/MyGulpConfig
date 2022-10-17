@@ -1,5 +1,4 @@
-// import {asd} from './func'; Пример импорта фунции из другого js файла
-
-
-
-
+import './_vendor';
+import vars from './_vars';
+import './_functions';
+import './_components';
